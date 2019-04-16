@@ -1,0 +1,25 @@
+-- http://projects.haskell.org/xmobar/
+-- install xmobar with these flags: --flags="with_alsa" --flags="with_mpd" --flags="with_xft"  OR --flags="all_extensions"
+-- you can find weather location codes here: http://weather.noaa.gov/index.html
+
+Config { font    = "xft:mononoki:pixelsize=15:antialias=true:hinting=true,FontAwesome:pixelsize=14"
+       , additionalFonts = [ "xft:FontAwesome:pixelsize=13" ]
+       , bgColor = "#292d3e"
+       , fgColor = "#bbc5ff"
+       , position = Bottom
+       , lowerOnStart = True
+       , hideOnStart = False
+       , allDesktops = True
+       , persistent = True
+       , commands = [ Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                    , Run Network "wlp9s0" ["-t", "Net: <rx>kb|<tx>kb"] 10                    
+                    , Run Cpu ["-t","Cpu: <total>%","-H","50","--high","red"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run DiskU [("/","Hdd: <used>/<size>")] [] 3600
+                    , Run UnsafeStdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%UnsafeStdinReader% }{ <fc=#91A0BD> <fc=#FFE585>%cpu%</fc> : <fc=#F07178>%memory%</fc> : <fc=#82AAFF>%disku%</fc> : <fc=#c3e88d>%wlp9s0%</fc> : <fc=#A3F7FF>%date%</fc> </fc> "
+       }
+

@@ -141,6 +141,7 @@ myKeys =
         [ ("M-C-r", spawn "xmonad --recompile")      -- Recompiles xmonad
         , ("M-S-r", spawn "xmonad --restart")        -- Restarts xmonad
         , ("M-S-z", io exitSuccess)                  -- Quits xmonad
+        , ("M-q", spawn "")                          -- Disabling default keybind
 
     -- Windows
         , ("M-S-q", kill1)                           -- Kill the currently focused client
@@ -265,7 +266,7 @@ myManageHook = composeAll
 ---LAYOUTS
 ------------------------------------------------------------------------
 
-myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats $
+myLayoutHook = smartBorders . avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats $
                mkToggle (NBFULL ?? NOBORDERS ?? EOT) $ myDefaultLayout
              where
                  myDefaultLayout = noBorders monocle ||| tall ||| grid ||| space ||| floats ||| threeCol ||| threeRow ||| oneBig

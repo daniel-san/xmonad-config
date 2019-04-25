@@ -74,18 +74,17 @@ myBorderWidth   = 2         -- Sets border width for windows
 windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 main = do
-    xmproc0 <- spawnPipe "xmobar -x 0 /home/dlsbdaniel/.config/xmobar/xmobarrc1" -- xmobar mon 1
-    xmproc1 <- spawnPipe "xmobar -x 0 /home/dlsbdaniel/.config/xmobar/xmobarrc0" -- xmobar mon 1
-    xmproc2 <- spawnPipe "xmobar -x 1 /home/dlsbdaniel/.config/xmobar/xmobarrc1" -- xmobar mon 2
-    xmproc3 <- spawnPipe "xmobar -x 1 /home/dlsbdaniel/.config/xmobar/xmobarrc0" -- xmobar mon 2
+    xmproc0 <- spawnPipe "xmobar -x 0 /home/daniel/.config/xmobar/xmobarrc1" -- xmobar mon 1
+    xmproc1 <- spawnPipe "xmobar -x 0 /home/daniel/.config/xmobar/xmobarrc0" -- xmobar mon 1
+    xmproc2 <- spawnPipe "xmobar -x 1 /home/daniel/.config/xmobar/xmobarrc1" -- xmobar mon 2
+    xmproc3 <- spawnPipe "xmobar -x 1 /home/daniel/.config/xmobar/xmobarrc0" -- xmobar mon 2
 
     --hSetEncoding xmproc0 utf8
     --hSetEncoding xmproc1 utf8
     --hSetEncoding xmproc2 utf8
     --hSetEncoding xmproc3 utf8
 
-    --xmproc2 <- spawnPipe "xmobar -x 2 /home/dlsbdaniel/.config/xmobar/xmobarrc0" -- xmobar mon 0
-    xmonad $ desktopConfig
+    xmonad $ ewmh desktopConfig
         { manageHook =  myManageHook <+> ( isFullscreen --> doFullFloat ) <+> manageHook desktopConfig <+> manageDocks
         , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = \x -> hPutStrLn xmproc0 x  >> hPutStrLn xmproc1 x >> hPutStrLn xmproc2 x >> hPutStrLn xmproc3 x
@@ -110,6 +109,7 @@ main = do
                         }
 
         , modMask            = myModMask
+        --, handleEventHook    = fullscreenEventHook
         , terminal           = myTerminal
         , startupHook        = myStartupHook
         , layoutHook         = myLayoutHook
@@ -124,6 +124,8 @@ main = do
 ------------------------------------------------------------------------
 myStartupHook = do
         execScriptHook "startup"
+        spawnOnce "xset m 0 0";
+        spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1";
         spawnOnce "xsetroot -cursor_name left_ptr";
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
         spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
@@ -132,6 +134,7 @@ myStartupHook = do
         spawnOnce "dropbox start"
         spawnOnce "nitrogen --restore"
         spawnOnce "compton &"
+        spawnOnce "redshift-gtk -t 3800:3800";
 
 ------------------------------------------------------------------------
 ---KEYBINDINGS
@@ -228,7 +231,8 @@ myKeys =
         --, ("<XF86Mail>", runOrRaise "geary" (resource =? "thunderbird"))
         --, ("<XF86Calculator>", runOrRaise "gcalctool" (resource =? "gcalctool"))
         --, ("<XF86Eject>", spawn "toggleeject")
-        --, ("<Print>", spawn "scrotd 0")
+        , ("<Print>", spawn "xfce4-screenshooter")
+        , ("C-S-<Escape>", spawn "termite -e htop")
         ] where nonNSP          = WSIs (return (\ws -> W.tag ws /= "nsp"))
                 nonEmptyNonNSP  = WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "nsp"))
 
@@ -250,7 +254,7 @@ myWorkspaces = clickable . (map xmobarEscape)
                       let n = i ]
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
-     [
+     [     
         className =? "Firefox"     --> doShift "<action=xdotool key super+2>2</action>"
       , title =? "Vivaldi"         --> doShift "<action=xdotool key super+2>www</action>"
       , title =? "irssi"           --> doShift "<action=xdotool key super+6>chat</action>"
@@ -259,7 +263,7 @@ myManageHook = composeAll
       , className =? "Virtualbox"  --> doFloat
       , className =? "Gimp"        --> doFloat
       , className =? "Gimp"        --> doShift "<action=xdotool key super+8>gfx</action>"
-      , (className =? "Firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
+      , (className =? "Firefox" <&&> resource =? "dialog") --> doFloat  -- Float Firefox Dialog
      ]
 
 ------------------------------------------------------------------------

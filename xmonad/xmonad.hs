@@ -263,7 +263,7 @@ myManageHook = composeAll
       , className =? "Virtualbox"  --> doFloat
       , className =? "Gimp"        --> doFloat
       , className =? "Gimp"        --> doShift "<action=xdotool key super+8>gfx</action>"
-      , (className =? "Firefox" <&&> resource =? "dialog") --> doFloat  -- Float Firefox Dialog
+      , (className =? "Firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
      ]
 
 ------------------------------------------------------------------------

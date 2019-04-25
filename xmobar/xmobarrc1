@@ -20,6 +20,6 @@ Config { font    = "xft:mononoki:pixelsize=15:antialias=true:hinting=true,FontAw
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader% }{ <fc=#91A0BD> <fc=#FFE585>%cpu%</fc> : <fc=#F07178>%memory%</fc> : <fc=#82AAFF>%disku%</fc> : <fc=#c3e88d>%wlp9s0%</fc> : <fc=#A3F7FF>%date%</fc> </fc> "
+       , template = "%UnsafeStdinReader% }{ <fc=#91A0BD> <action=/home/daniel/scripts/cpu button=1><fc=#FFE585>%cpu%</fc></action> : <action=/home/daniel/scripts/memory button=1><fc=#F07178>%memory%</fc></action> : <fc=#82AAFF>%disku%</fc> : <fc=#c3e88d>%wlp10s0%</fc> : <action=/home/daniel/scripts/calendar button=1><fc=#A3F7FF>%date%</fc></action> </fc> "
        }
 

@@ -129,7 +129,7 @@ myStartupHook = do
         spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1";
         spawnOnce "xsetroot -cursor_name left_ptr";
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-        spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
+        spawnOnce "/usr/bin/trayer --edge top --align right --monitor 'primary' --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
         spawnOnce "volumeicon &"
         spawnOnce "nm-applet"
         spawnOnce "dropbox start"

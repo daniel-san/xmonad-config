@@ -135,7 +135,7 @@ myStartupHook = do
         spawnOnce "dropbox start"
         spawnOnce "nitrogen --restore"
         spawnOnce "compton &"
-        spawnOnce "redshift-gtk -l -6.466496:-37.084787 -t 3800:3800";
+        spawnOnce "redshift-gtk -t 3800:3800";
 
 ------------------------------------------------------------------------
 ---KEYBINDINGS

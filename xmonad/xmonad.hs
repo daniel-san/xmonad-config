@@ -69,7 +69,7 @@ import XMonad.Prompt (defaultXPConfig, XPConfig(..), XPPosition(Top), Direction1
 ---CONFIG
 ------------------------------------------------------------------------
 myModMask       = mod4Mask  -- Sets modkey to super/windows key
-myTerminal      = "xfce4-terminal"      -- Sets default terminal
+myTerminal      = "st"      -- Sets default terminal
 myTextEditor    = "vim"     -- Sets default text editor
 myBorderWidth   = 2         -- Sets border width for windows
 windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
@@ -129,7 +129,7 @@ myStartupHook = do
         spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1";
         spawnOnce "xsetroot -cursor_name left_ptr";
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-        spawnOnce "/usr/bin/trayer --edge top --align right --monitor 'primary' --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
+        spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
         spawnOnce "volumeicon &"
         spawnOnce "nm-applet"
         spawnOnce "dropbox start"
@@ -219,6 +219,8 @@ myKeys =
         , ("M-m", spawn "xfce4-terminal -e /home/daniel/.config/vifm/scripts/vifmrun")
         , ("M-<KP_Insert>", spawn "dmenu_run -fn 'UbuntuMono Nerd Font:size=10' -nb '#292d3e' -nf '#bbc5ff' -sb '#82AAFF' -sf '#292d3e' -p 'dmenu:'")
 
+    -- Scripts
+        , ("M-<F12>", spawn "/home/daniel/scripts/bookmarks.sh")
 
     -- Multimedia Keys
         --, ("<XF86AudioPlay>", spawn "cmus toggle")
@@ -257,13 +259,8 @@ myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
      [     
         className =? "Firefox"     --> doShift "<action=xdotool key super+2>2</action>"
-      , title =? "Vivaldi"         --> doShift "<action=xdotool key super+2>www</action>"
-      , title =? "irssi"           --> doShift "<action=xdotool key super+6>chat</action>"
-      , title =? "cmus"            --> doFloat
-      , className =? "vlc"         --> doShift "<action=xdotool key super+7>media</action>"
       , className =? "Virtualbox"  --> doFloat
       , className =? "Gimp"        --> doFloat
-      , className =? "Gimp"        --> doShift "<action=xdotool key super+8>gfx</action>"
       , (className =? "Firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
      ]
 

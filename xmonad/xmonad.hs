@@ -69,8 +69,9 @@ import XMonad.Prompt (defaultXPConfig, XPConfig(..), XPPosition(Top), Direction1
 ---CONFIG
 ------------------------------------------------------------------------
 myModMask       = mod4Mask  -- Sets modkey to super/windows key
-myTerminal      = "st"      -- Sets default terminal
-myTextEditor    = "vim"     -- Sets default text editor
+myTerminal      = "kitty"      -- Sets default terminal
+myTextEditor    = "nvim"     -- Sets default text editor
+myBrowser       = "firefox"  -- Sets default browser
 myBorderWidth   = 2         -- Sets border width for windows
 windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
@@ -129,13 +130,13 @@ myStartupHook = do
         spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1";
         spawnOnce "xsetroot -cursor_name left_ptr";
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-        spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
+        spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 14 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
         spawnOnce "volumeicon &"
         spawnOnce "nm-applet"
-        spawnOnce "dropbox start"
+        spawnOnce "/home/daniel/Apps/Nextcloud.AppImage &"
         spawnOnce "nitrogen --restore"
         spawnOnce "compton &"
-        spawnOnce "redshift-gtk -t 3800:3800";
+        spawnOnce "redshift-gtk -P -O 3800";
 
 ------------------------------------------------------------------------
 ---KEYBINDINGS
@@ -214,10 +215,10 @@ myKeys =
         , ("M-<Return>", spawn myTerminal)
         , ("M-S-x", spawn "i3lock --color 475263")
         , ("M-d", spawn "rofi -show combi -combi-modi run,drun")
-        , ("M-w", spawn "chromium")
+        , ("M-w", spawn myBrowser)
         , ("M-n", spawn "pcmanfm")
-        , ("M-m", spawn "xfce4-terminal -e /home/daniel/.config/vifm/scripts/vifmrun")
-        , ("M-<KP_Insert>", spawn "dmenu_run -fn 'UbuntuMono Nerd Font:size=10' -nb '#292d3e' -nf '#bbc5ff' -sb '#82AAFF' -sf '#292d3e' -p 'dmenu:'")
+        , ("M-m", spawn "st -e /home/daniel/.config/vifm/scripts/vifmrun")
+        , ("M-p", spawn "dmenu_run -fn 'mononoki:size=12' -nb '#292d3e' -nf '#bbc5ff' -sb '#82AAFF' -sf '#292d3e' -p 'dmenu:'")
 
     -- Scripts
         , ("M-<F12>", spawn "/home/daniel/scripts/bookmarks.sh")

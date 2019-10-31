@@ -71,7 +71,7 @@ import XMonad.Prompt (defaultXPConfig, XPConfig(..), XPPosition(Top), Direction1
 myModMask       = mod4Mask  -- Sets modkey to super/windows key
 myTerminal      = "kitty"      -- Sets default terminal
 myTextEditor    = "nvim"     -- Sets default text editor
-myBrowser       = "firefox"  -- Sets default browser
+myBrowser       = "firefox" -- Sets default web browser
 myBorderWidth   = 2         -- Sets border width for windows
 windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
@@ -90,11 +90,11 @@ main = do
         { manageHook =  myManageHook <+> ( isFullscreen --> doFullFloat ) <+> manageHook desktopConfig <+> manageDocks
         , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = \x -> hPutStrLn xmproc0 x  >> hPutStrLn xmproc1 x >> hPutStrLn xmproc2 x >> hPutStrLn xmproc3 x
-                        , ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]" -- Current workspace in xmobar
-                        , ppVisible = xmobarColor "#c3e88d" ""                -- Visible but not current workspace
+                        , ppCurrent = xmobarColor "#C3E88D" "" . wrap "[" "]" -- Current workspace in xmobar
+                        , ppVisible = xmobarColor "#C3E88D" ""                -- Visible but not current workspace
                         , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
                         , ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
-                        , ppTitle = xmobarColor "#d0d0d0" "" . shorten 120     -- Title of active window in xmobar
+                        , ppTitle = xmobarColor "#D0D0D0" "" . shorten 120     -- Title of active window in xmobar
                         , ppSep =  "<fc=#9AEDFE> : </fc>"                     -- Separators in xmobar
                         , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
                         , ppExtras  = [windowCount]                           -- # of windows current workspace
@@ -118,7 +118,8 @@ main = do
         , workspaces         = myWorkspaces
         , borderWidth        = myBorderWidth
         , normalBorderColor  = "#292d3e"
-        , focusedBorderColor = "#bbc5ff"
+        --, focusedBorderColor = "#BBC5FF"
+        , focusedBorderColor = "#C93648"
         } `additionalKeysP`         myKeys
 
 ------------------------------------------------------------------------
@@ -127,16 +128,16 @@ main = do
 myStartupHook = do
         execScriptHook "startup"
         spawnOnce "xset m 0 0";
-        spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1";
-        spawnOnce "xsetroot -cursor_name left_ptr";
+        spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1"
+        spawnOnce "xsetroot -cursor_name left_ptr"
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
         spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 14 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
         spawnOnce "volumeicon &"
         spawnOnce "nm-applet"
         spawnOnce "/home/daniel/Apps/Nextcloud.AppImage &"
-        spawnOnce "nitrogen --restore"
+        spawnOnce "variety || nitrogen --restore"
         spawnOnce "compton &"
-        spawnOnce "redshift-gtk -P -O 3800";
+        spawnOnce "redshift-gtk -P -O 3800"
 
 ------------------------------------------------------------------------
 ---KEYBINDINGS
@@ -217,13 +218,16 @@ myKeys =
         , ("M-d", spawn "rofi -show combi -combi-modi run,drun")
         , ("M-w", spawn myBrowser)
         , ("M-n", spawn "pcmanfm")
-        , ("M-m", spawn "st -e /home/daniel/.config/vifm/scripts/vifmrun")
-        , ("M-p", spawn "dmenu_run -fn 'mononoki:size=12' -nb '#292d3e' -nf '#bbc5ff' -sb '#82AAFF' -sf '#292d3e' -p 'dmenu:'")
+        , ("M-m", spawn "xfce4-terminal -e /home/daniel/.config/vifm/scripts/vifmrun")
+        , ("M-p", spawn "dmenu_run -fn 'mononoki:size=12' -nb '#292d3e' -nf '#bbc5ff' -sb '#c93648' -sf '#292d3e' -p 'dmenu:'")
 
     -- Scripts
+        , ("M-<F10>", spawn "/home/daniel/Projects/python/docs-dmenu/docs.sh")
+        , ("M-<F11>", spawn "/home/daniel/scripts/redshift.sh")
         , ("M-<F12>", spawn "/home/daniel/scripts/bookmarks.sh")
 
     -- Multimedia Keys
+        , ("<XF86Calculator>", spawn "st -e python")
         --, ("<XF86AudioPlay>", spawn "cmus toggle")
         --, ("<XF86AudioPrev>", spawn "cmus prev")
         --, ("<XF86AudioNext>", spawn "cmus next")
@@ -258,7 +262,7 @@ myWorkspaces = clickable . (map xmobarEscape)
                       let n = i ]
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
-     [     
+     [
         className =? "Firefox"     --> doShift "<action=xdotool key super+2>2</action>"
       , className =? "Virtualbox"  --> doFloat
       , className =? "Gimp"        --> doFloat
@@ -272,7 +276,7 @@ myManageHook = composeAll
 myLayoutHook = smartBorders . avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats $
                mkToggle (NBFULL ?? NOBORDERS ?? EOT) $ myDefaultLayout
              where
-                 myDefaultLayout = noBorders monocle ||| tall ||| grid ||| space ||| floats ||| threeCol ||| threeRow ||| oneBig
+                 myDefaultLayout = noBorders monocle ||| tall ||| tabbedL ||| grid ||| space ||| floats ||| threeCol ||| threeRow ||| oneBig
 
 
 tall       = renamed [Replace "tall"]     $ limitWindows 12 $ spacing 6 $ ResizableTall 1 (3/100) (1/2) []

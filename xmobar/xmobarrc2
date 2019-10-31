@@ -2,10 +2,10 @@
 -- install xmobar with these flags: --flags="with_alsa" --flags="with_mpd" --flags="with_xft"  OR --flags="all_extensions"
 -- you can find weather location codes here: http://weather.noaa.gov/index.html
 
-Config { font    = "xft:mononoki:pixelsize=17:antialias=true:hinting=true,FontAwesome:pixelsize=14"
+Config { font    = "xft:mononoki:pixelsize=15:antialias=true:hinting=true,FontAwesome:pixelsize=14"
        , bgColor = "#292d3e"
        , fgColor = "#bbc5ff"
-       , position = Bottom
+       , position = Top
        , lowerOnStart = True
        , hideOnStart = False
        , allDesktops = True
@@ -15,6 +15,6 @@ Config { font    = "xft:mononoki:pixelsize=17:antialias=true:hinting=true,FontAw
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%UnsafeStdinReader% }{ <fc=#91A0BD> <fc=#fdf6e3>%%</fc> </fc> <fc=#A3F7FF>%date%</fc> "
+       , template = "%UnsafeStdinReader% }{ <fc=#91A0BD> <fc=#fdf6e3>%%</fc> </fc> "
        }
 

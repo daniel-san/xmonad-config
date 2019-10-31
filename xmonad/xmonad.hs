@@ -218,7 +218,7 @@ myKeys =
         , ("M-d", spawn "rofi -show combi -combi-modi run,drun")
         , ("M-w", spawn myBrowser)
         , ("M-n", spawn "pcmanfm")
-        , ("M-m", spawn "xfce4-terminal -e /home/daniel/.config/vifm/scripts/vifmrun")
+        , ("M-m", spawn "kitty -e /home/daniel/.config/vifm/scripts/vifmrun")
         , ("M-p", spawn "dmenu_run -fn 'mononoki:size=12' -nb '#292d3e' -nf '#bbc5ff' -sb '#c93648' -sf '#292d3e' -p 'dmenu:'")
 
     -- Scripts

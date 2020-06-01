@@ -69,7 +69,7 @@ import XMonad.Prompt (defaultXPConfig, XPConfig(..), XPPosition(Top), Direction1
 ---CONFIG
 ------------------------------------------------------------------------
 myModMask       = mod4Mask  -- Sets modkey to super/windows key
-myTerminal      = "kitty"      -- Sets default terminal
+myTerminal      = "alacritty"      -- Sets default terminal
 myTextEditor    = "nvim"     -- Sets default text editor
 myBrowser       = "firefox" -- Sets default web browser
 myBorderWidth   = 2         -- Sets border width for windows

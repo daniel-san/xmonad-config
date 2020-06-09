@@ -10,6 +10,9 @@ import System.IO (hPutStrLn, hSetEncoding, stdout, utf8)
 import System.Exit (exitSuccess)
 import qualified XMonad.StackSet as W
 
+import qualified DBus as D
+import qualified DBus.Client as D
+
     -- Utilities
 import XMonad.Util.Loggers
 import XMonad.Util.EZConfig (additionalKeysP, additionalMouseBindings)
@@ -73,43 +76,18 @@ myTerminal      = "alacritty"      -- Sets default terminal
 myTextEditor    = "nvim"     -- Sets default text editor
 myBrowser       = "firefox" -- Sets default web browser
 myBorderWidth   = 2         -- Sets border width for windows
-windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+--windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 main = do
-    xmproc0 <- spawnPipe "xmobar -x 0 /home/daniel/.config/xmobar/xmobarrc1" -- xmobar mon 1
-    xmproc1 <- spawnPipe "xmobar -x 0 /home/daniel/.config/xmobar/xmobarrc0" -- xmobar mon 1
-    xmproc2 <- spawnPipe "xmobar -x 1 /home/daniel/.config/xmobar/xmobarrc1" -- xmobar mon 2
-    xmproc3 <- spawnPipe "xmobar -x 1 /home/daniel/.config/xmobar/xmobarrc0" -- xmobar mon 2
 
-    --hSetEncoding xmproc0 utf8
-    --hSetEncoding xmproc1 utf8
-    --hSetEncoding xmproc2 utf8
-    --hSetEncoding xmproc3 utf8
+    dbus <- D.connectSession
+    -- Request access to the DBus name
+    D.requestName dbus (D.busName_ "org.xmonad.Log")
+        [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+
 
     xmonad $ ewmh desktopConfig
         { manageHook =  myManageHook <+> ( isFullscreen --> doFullFloat ) <+> manageHook desktopConfig <+> manageDocks
-        , logHook = dynamicLogWithPP xmobarPP
-                        { ppOutput = \x -> hPutStrLn xmproc0 x  >> hPutStrLn xmproc1 x >> hPutStrLn xmproc2 x >> hPutStrLn xmproc3 x
-                        , ppCurrent = xmobarColor "#C3E88D" "" . wrap "[" "]" -- Current workspace in xmobar
-                        , ppVisible = xmobarColor "#C3E88D" ""                -- Visible but not current workspace
-                        , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
-                        , ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
-                        , ppTitle = xmobarColor "#D0D0D0" "" . shorten 120     -- Title of active window in xmobar
-                        , ppSep =  "<fc=#9AEDFE> : </fc>"                     -- Separators in xmobar
-                        , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
-                        , ppExtras  = [windowCount]                           -- # of windows current workspace
-                        --, ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
-                        , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[]
-                        } <+> dynamicLogWithPP xmobarPP -- config for the second xmobar
-                        { ppOutput = hPutStrLn xmproc1
-                        , ppTitle = xmobarColor "#F07178" "" . shorten 120     -- Title of active window in xmobar
-                        , ppOrder  = \(ws:l:t:ex) -> []++ex++[t]
-                        } <+> dynamicLogWithPP xmobarPP -- config for the second xmobar on the second monitor
-                        { ppOutput = hPutStrLn xmproc3
-                        , ppTitle = xmobarColor "#F07178" "" . shorten 120     -- Title of active window in xmobar
-                        , ppOrder  = \(ws:l:t:ex) -> []++ex++[t]
-                        }
-
         , modMask            = myModMask
         --, handleEventHook    = fullscreenEventHook
         , terminal           = myTerminal
@@ -127,11 +105,12 @@ main = do
 ------------------------------------------------------------------------
 myStartupHook = do
         execScriptHook "startup"
+        spawn "$HOME/.config/polybar/launch.sh"
         spawnOnce "xset m 0 0";
         spawnOnce "xrandr --output DVI-D-0 --primary --auto --right-of HDMI-1"
         spawnOnce "xsetroot -cursor_name left_ptr"
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-        spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 14 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
+        --spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 14 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
         spawnOnce "volumeicon &"
         spawnOnce "nm-applet"
         spawnOnce "/home/daniel/Apps/Nextcloud.AppImage &"
@@ -248,18 +227,9 @@ myKeys =
 ---WORKSPACES
 ------------------------------------------------------------------------
 
-xmobarEscape = concatMap doubleLts
-  where
-        doubleLts '<' = "<<"
-        doubleLts x   = [x]
-
 myWorkspaces :: [String]
-myWorkspaces = clickable . (map xmobarEscape)
-               $ [" 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 "]
-  where
-        clickable l = [ "<action=xdotool key super+" ++ show (n) ++ ">" ++ ws ++ "</action>" |
-                      (i,ws) <- zip [1..9] l,
-                      let n = i ]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
      [

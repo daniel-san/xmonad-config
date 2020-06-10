@@ -68,6 +68,8 @@ import XMonad.Layout.Tabbed
     -- Prompts
 import XMonad.Prompt (defaultXPConfig, XPConfig(..), XPPosition(Top), Direction1D(..))
 
+
+import qualified Codec.Binary.UTF8.String as UTF8
 ------------------------------------------------------------------------
 ---CONFIG
 ------------------------------------------------------------------------
@@ -76,7 +78,8 @@ myTerminal      = "alacritty"      -- Sets default terminal
 myTextEditor    = "nvim"     -- Sets default text editor
 myBrowser       = "firefox" -- Sets default web browser
 myBorderWidth   = 2         -- Sets border width for windows
---windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+windowCount     = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+
 
 main = do
 
@@ -88,6 +91,7 @@ main = do
 
     xmonad $ ewmh desktopConfig
         { manageHook =  myManageHook <+> ( isFullscreen --> doFullFloat ) <+> manageHook desktopConfig <+> manageDocks
+        , logHook = dynamicLogWithPP (myLogHook dbus)
         , modMask            = myModMask
         --, handleEventHook    = fullscreenEventHook
         , terminal           = myTerminal
@@ -99,6 +103,30 @@ main = do
         --, focusedBorderColor = "#BBC5FF"
         , focusedBorderColor = "#C93648"
         } `additionalKeysP`         myKeys
+
+
+-----------------------------------------------------------------------------}}}
+-- LOGHOOK                                                                   {{{
+--------------------------------------------------------------------------------
+myLogHook :: D.Client -> PP
+myLogHook dbus = def
+    { ppOutput = dbusOutput dbus
+    , ppSep =  " | "                     -- Separators in xmobar
+    , ppExtras  = [windowCount]                           -- # of windows current workspace
+    , ppOrder  = \(ws:l:t:ex) -> [l]++ex++[]
+    }
+
+-- Emit a DBus signal on log updates
+dbusOutput :: D.Client -> String -> IO ()
+dbusOutput dbus str = do
+    let signal = (D.signal objectPath interfaceName memberName) {
+            D.signalBody = [D.toVariant $ UTF8.decodeString str]
+        }
+    D.emit dbus signal
+  where
+    objectPath = D.objectPath_ "/org/xmonad/Log"
+    interfaceName = D.interfaceName_ "org.xmonad.Log"
+    memberName = D.memberName_ "Update"
 
 ------------------------------------------------------------------------
 ---AUTOSTART
@@ -228,7 +256,7 @@ myKeys =
 ------------------------------------------------------------------------
 
 myWorkspaces :: [String]
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll

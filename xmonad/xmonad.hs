@@ -141,7 +141,7 @@ myStartupHook = do
         --spawnOnce "/usr/bin/trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 14 --transparent true --alpha 0 --tint 0x292d3e --height 19 &";
         spawnOnce "volumeicon &"
         spawnOnce "nm-applet"
-        spawnOnce "/home/daniel/Apps/Nextcloud.AppImage &"
+        spawnOnce "megasync &"
         spawnOnce "variety || nitrogen --restore"
         spawnOnce "compton &"
         spawnOnce "redshift-gtk -P -O 3800"
